@@ -10,44 +10,10 @@ public class Action {
 		this.command2 = words1;
 	}
 
-	public void displayState(Location[] loc, Boolean showHint){
-		int xPos = currentLoc.getX();
-		int yPos = currentLoc.getY();
-		for (int i = 0; i < 13; i++){
-			if ((loc[i].getX() == xPos) && (loc[i].getY() == yPos)){
-				currentLoc = loc[i];
-				if (showHint){
-					System.out.println("Hint:" + " x:" + currentLoc.getX() + " y:" + currentLoc.getY());
-				}
-				System.out.println(loc[i].getDisplay());
-				
-			}
-		}
-	}	
-	public void displayLook(Location[] loc, Location currentLoc, String direction){
-		Location newLocation = new Location(null,currentLoc.getX(), currentLoc.getY(), null, null, null);
-		newLocation.setPos(direction);
-		int xPos = newLocation.getX();
-		int yPos = newLocation.getY();
-		for (int i = 0; i < 13; i++){
-			if ((loc[i].getX() == xPos) && (loc[i].getY() == yPos)){
-				newLocation = loc[i];
-				System.out.print("You see.. ");
-				System.out.println(loc[i].getLookDisplay());
-				
-			}
-		}
+	public Location goTo(String direction, Location currentLoc){
+		return currentLoc.newLocation(direction);
 	}	
 	public Inventory displayItems(Location[] loc){
-		int xPos = currentLoc.getX();
-		int yPos = currentLoc.getY();
-		for (int i = 0; i < 13; i++){
-			if ((loc[i].getX() == xPos) && (loc[i].getY() == yPos)){
-				Location newLocation = loc[i];
-				Inventory newInv = getInventory(newLocation);
-				return newInv;
-			}
-		}
 		return null;
 	}	
 	public Inventory getInventory(Location newLocation){
