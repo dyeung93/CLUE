@@ -2,13 +2,13 @@ import java.util.*;
 
 public class Processor{
 	private Location currentLoc;
-	private int xLoc = 3, yLoc = 4;
 	private Location[] loc = new Location[13];
 	private Inventory currentInv; // location Inventory and personal inventory
 	private Item[] newItem = new Item[10]; // location then num of objects
 	private Item currentItem;
 	private Map<String, Item> myInventory = new HashMap<String, Item>();
 	private boolean endFlag;
+	private String secondWord;
 	//Item stuff
 	private Inventory[] gInventory = new Inventory[7];
 	private Map<String,String> commandList = new HashMap<String,String>();
@@ -38,36 +38,51 @@ public class Processor{
 	} 
 
 	private void createLocations(){
-		Location kitchen, dining, col_mus, library, my_room, hallway, gameRoom, entrance, joe, thai, eric, david, end;
-			end = new Location("You are outside talking to the cops.. What do you think killed him?", 1, 4, null, null, null);
-			kitchen = new Location("You are in the kitchen", 0, 0, gInventory[0], "The kitchen, I doubt there's any food there", null);
-			dining = new Location("You are in the dining room, everyone's gone", 0, 1, null,"The dining room, food is still half finished", null);
-			col_mus = new Location("You are in the bedroom of Col Mustard", 0, 2, gInventory[3],"The ghost of col Mustard..kinda freaky", null);
-			library = new Location("You are in the library...everything's quiet", 0, 3, gInventory[6],"The library, the books are all leather bounded...", newItem[8]);
-			my_room = new Location("You are in the bedroom where you awoke..", 1, 0, gInventory[5],"The bedroom where you awoke, it looks dark and nasty", newItem[9]);
-			hallway = new Location("You are in the hallway..fancy paintings on the wall but nothing special ", 1, 1, gInventory[4],"The hallway..its long and empty and hallwayish", null);
-			gameRoom = new Location("You are in the game room", 1, 2, null,"The hallway, its long and stretches", null);
-			entrance = new Location("You're at the entrance of the house.. Do you want to go out now? (Go north for yes)(Ends the game)", 1, 3, null,"a door, a big old wooden door", null);
-			joe = new Location("You are in the room Joe was staying at..kinda dark in here", 2, 0, gInventory[1],"Joe's not here but let's look through his stuff", newItem[1]);
-			thai = new Location("You are in the room Thai was staying at..kinda dark in here", 2, 1, null,"Thai's not here but let's look through his stuff", newItem[1]);
-			eric = new Location("You are in the room Eric was staying at..kinda dark in here", 2, 2, gInventory[2],"Eric's not here but lets look through his stuff", newItem[1]);
-			david = new Location("You are in the room David was staying at.. kinda dark in here", 2, 3, null,"David's not here but lets look through his stuff", newItem[1]);
+		Location kitchen, dining, col_mus, library, hallway, gameRoom, entrance, plum, scarlet, white, green, peacock, end;
+			end = new Location("You are outside talking to the cops.. What do you think killed him?", null, null, null);
+			kitchen = new Location("You are in the kitchen", gInventory[0], "The kitchen, I doubt there's any food there", null);
+			dining = new Location("You are in the dining room, everyone's gone", null,"The dining room, food is still half finished", null);
+			col_mus = new Location("You are in the bedroom of Col Mustard", gInventory[3],"The ghost of col Mustard..kinda freaky", null);
+			library = new Location("You are in the library...everything's quiet", gInventory[6],"The library, the books are all leather bounded...", newItem[8]);
+			green = new Location("You are in the bedroom where you awoke..Look's like its Mr. Green's room", gInventory[5],"The bedroom where you awoke, it looks dark and nasty", newItem[9]);
+			hallway = new Location("You are in the hallway..fancy paintings on the wall but nothing special ", gInventory[4],"The hallway..its long and empty and hallwayish", null);
+			gameRoom = new Location("You are in the game room", null,"The hallway, its long and stretches", null);
+			entrance = new Location("You're at the entrance of the house.. Do you want to go out now? (Go north for yes)(Ends the game)", null,"a door, a big old wooden door", null);
+			scarlet = new Location("You are in the room Miss Scarlet was staying at..kinda dark in here", gInventory[1],"Miss Scarlet's room.. let's look through her stuff", newItem[1]);
+			white = new Location("You are in the room Ms. White was staying at..kinda dark in here", null,"Ms White's room.. let's look through her stuff", newItem[1]);
+			peacock = new Location("You are in the room Mrs.Peacock was staying at..kinda dark in here", gInventory[2],"Mrs. Peacock's room .. lets look through her stuff", newItem[1]);
+			plum = new Location("You are in the room Professor Plum was staying at.. kinda dark in here", null,"Prof. Plum's room.. lets look through his stuff", newItem[1]);
 			loc[0] = kitchen;
 			loc[1] = dining;
 			loc[2] = col_mus;
 			loc[3] = library;
-			loc[4] = my_room;
+			loc[4] = green;
 			loc[5] = hallway;
 			loc[6] = gameRoom;
 			loc[7] = entrance;
-			loc[8] = joe;
-			loc[9] = thai;
-			loc[10] = eric;
-			loc[11] = david;
+			loc[8] = scarlet;
+			loc[9] = plum;
+			loc[10] = white;
+			loc[11] = peacock;
 			loc[12] = end;
+
+			kitchen.setExits(gameRoom,white,null,dining);
+			dining.setExits(hallway,green,kitchen,plum);
+			col_mus.setExits(null,white,entrance,null);
+			library.setExits(null,gameRoom,null,entrance);
+			green.setExits(dining,null,scarlet,white);
+			hallway.setExits(entrance,dining,peacock,gameRoom);
+			gameRoom.setExits(library,kitchen,null,hallway);
+			entrance.setExits(end,hallway,library,col_mus);
+			scarlet.setExits(plum,null,green,null);
+			white.setExits(kitchen,null,null,green);
+			peacock.setExits(col_mus,plum,hallway,null);
+			plum.setExits(peacock,scarlet,dining,null);
+			
+
 			
 			String startMessage = "The first thing you do is..";
-			currentLoc = new Location(startMessage, 1, 0, null, null, null);
+			currentLoc = green;
 
 	}
 	private void createCommands(){
@@ -139,6 +154,14 @@ public class Processor{
 	}
 	public void processCommand(String command){
 		String[] word = parseCommand(command);
+
+		if (secondWordList.containsKey(word[1])){
+			secondWord = secondWordList.get(word[1]); 
+		}else{
+			System.out.println("Nope not a valid thing to do");
+			return;
+		} //Checks if a valid command
+
 		System.out.println(); //prints out a line space 
 		determineAction(word);
 	}
@@ -169,7 +192,10 @@ public class Processor{
 	}
 	public void determineAction(String[] words){
 		Action action = new Action(currentLoc, words[0], words[1]);
-
+		Location newLoc;
+		if (words[0].equals("go")){
+			newLoc = action.goTo(secondWord, currentLoc);
+		}
 	}
 
 
