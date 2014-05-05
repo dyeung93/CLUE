@@ -21,16 +21,16 @@ public class Location {
 
 	public void setExits(Location north, Location south, Location east, Location west){
 		if (north != null) {
-			exits.put("north", north)
+			exits.put("north", north);
 		}
 		if (north != null) {
-			exits.put("south", south)
+			exits.put("south", south);
 		}
 		if (north != null) {
-			exits.put("west", west)
+			exits.put("west", west);
 		}
 		if (north != null) {
-			exits.put("east", east)
+			exits.put("east", east);
 		}
 
 	}
@@ -54,5 +54,9 @@ public class Location {
 	}
 	public String getUseItem(){
 		return useabeItem;
+	}
+	public Location newLocation(String direction){
+		Location newLoc = exits.get(direction);
+		return newLoc;
 	}
 }
